@@ -15,6 +15,7 @@ const DEFAULTS = () => ({
   watch: { start: null, elapsed: 0, laps: [] },   // standalone stopwatch; laps are running totals in ms
   ddays: [],            // { id, name, date: 'YYYY-MM-DD' }
   breakEvery: 50,       // minutes of continuous timing before a break reminder
+  breakTimer: { endsAt: null, min: 10 },   // break countdown; min = last custom length
   notes: '',
 });
 
@@ -25,6 +26,7 @@ function merge(d) {
     if (d[k] != null && typeof d[k] === typeof s[k] && Array.isArray(d[k]) === Array.isArray(s[k])) s[k] = d[k];
   s.pomo = { ...DEFAULTS().pomo, ...s.pomo };
   s.watch = { ...DEFAULTS().watch, ...s.watch };
+  s.breakTimer = { ...DEFAULTS().breakTimer, ...s.breakTimer };
   return s;
 }
 
@@ -44,6 +46,9 @@ const mmss = ms => { const s = Math.ceil(ms / 1000); return `${pad(s / 60)}:${pa
 const hmst = ms => `${hms(ms)}.${Math.floor(ms / 100 % 10)}`;
 const hm = ms => { const m = Math.floor(ms / 60000); return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${pad(m % 60)}m`; };
 const daysAgo = n => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - n).getTime(); };
+const nextDay = t => { const d = new Date(t); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1).getTime(); };
+const isoDate = t => { const d = new Date(t); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const clock = t => new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 const subject = id => S.subjects.find(s => s.id === id);
 const dot = color => `<span class="dot" style="background:${esc(color)}"></span>`;
 
@@ -103,6 +108,30 @@ function bar(label, ms, max, color = 'var(--accent)') {
     <div class="track"><div class="fill" style="width:${(ms / max * 100).toFixed(1)}%;background:${esc(color)}"></div></div>
     <span class="num">${hm(ms)}</span></div>`;
 }
+// Per-subject bars for time tracked between from and to; '' when nothing was tracked.
+function subjectBars(from, to) {
+  const bySubject = new Map();
+  for (const s of sessions()) {
+    const key = subject(s.subjectId) ? s.subjectId : '';
+    bySubject.set(key, (bySubject.get(key) || 0) + overlap(s, from, to));
+  }
+  const subs = [...bySubject].filter(([, ms]) => ms > 0).sort((a, b) => b[1] - a[1]);
+  return subs.map(([id, ms]) => {
+    const s = subject(id);
+    return bar(s ? s.name : 'Other', ms, subs[0][1], s?.color);
+  }).join('');
+}
+
+// Sum of the gaps between today's sessions (YPT "rest time").
+function restToday() {
+  const from = daysAgo(0);
+  let rest = 0, end = null;
+  for (const s of sessions().filter(s => s.end > from).sort((a, b) => a.start - b.start)) {
+    if (end !== null) rest += Math.max(0, s.start - end);
+    end = Math.max(end ?? from, s.end);
+  }
+  return rest;
+}
 const watchTime = now => S.watch.elapsed + (S.watch.start ? now - S.watch.start : 0);
 const pomoLeft = now => {
   const p = S.pomo;
@@ -112,7 +141,7 @@ const pomoLeft = now => {
 // ---------- modules ----------
 // { id, name, render() -> html, tick?(now) runs every second while on, actions: { name(el) } }
 // An action re-renders after it runs unless it returns false.
-let statsDays = 7;
+let statsDays = 7, calMonth = 0, calDay = null;   // calMonth: months from the current one
 
 const MODULES = [
   {
@@ -293,17 +322,6 @@ const MODULES = [
       const pick = ranges.map(([n, label]) =>
         `<button id="range-${n}" data-click="statsRange" data-id="${n}" aria-pressed="${n === statsDays}">${label}</button>`).join('');
 
-      const bySubject = new Map();
-      for (const s of sessions()) {
-        const key = subject(s.subjectId) ? s.subjectId : '';
-        bySubject.set(key, (bySubject.get(key) || 0) + overlap(s, from, now));
-      }
-      const subs = [...bySubject].filter(([, ms]) => ms > 0).sort((a, b) => b[1] - a[1]);
-      const subBars = subs.map(([id, ms]) => {
-        const s = subject(id);
-        return bar(s ? s.name : 'Other', ms, subs[0][1], s?.color);
-      }).join('');
-
       const days = Array.from({ length: statsDays }, (_, i) => [daysAgo(i), total(daysAgo(i), daysAgo(i - 1))]);
       const dayMax = Math.max(1, ...days.map(d => d[1]));
       const dayBars = days.map(([t, ms]) =>
@@ -311,11 +329,55 @@ const MODULES = [
 
       return `<div class="cards">${cards}</div>
         <div class="row" role="group" aria-label="Range">${pick}</div>
-        <h2>By subject</h2>${subBars || '<p class="muted">Nothing tracked in this range.</p>'}
+        <h2>By subject</h2>${subjectBars(from, now) || '<p class="muted">Nothing tracked in this range.</p>'}
         <h2>By day</h2>${dayBars}`;
     },
     actions: {
       statsRange(el) { statsDays = Number(el.dataset.id); },
+    },
+  },
+
+  {
+    id: 'calendar', name: 'Calendar',
+    render() {
+      const now = new Date(), first = new Date(now.getFullYear(), now.getMonth() + calMonth, 1);
+      const days = Array.from({ length: new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate() },
+        (_, i) => new Date(first.getFullYear(), first.getMonth(), i + 1).getTime());
+      const totals = days.map(t => total(t, nextDay(t)));
+      const max = Math.max(1, ...totals), today = daysAgo(0);
+      const blanks = '<span></span>'.repeat((first.getDay() + 6) % 7);   // Monday-first
+      const cells = days.map((t, i) => {
+        const ms = totals[i], ddays = S.ddays.filter(d => d.date === isoDate(t)).map(d => d.name);
+        const label = [new Date(t).toLocaleDateString(undefined, { month: 'long', day: 'numeric' }), ms && hm(ms), ...ddays].filter(Boolean).join(', ');
+        return `<button class="day lvl${ms && Math.ceil(ms / max * 4)}${t === today ? ' today' : ''}" id="day-${t}"
+          data-click="calPick" data-id="${t}" aria-pressed="${t === calDay}" aria-label="${esc(label)}">
+          <span>${i + 1}</span>${ms ? `<small>${hm(ms)}</small>` : ''}${ddays.map(n => `<small>${esc(n)}</small>`).join('')}</button>`;
+      }).join('');
+
+      let detail = '';
+      if (calDay) {
+        const end = nextDay(calDay);
+        const list = sessions().filter(s => overlap(s, calDay, end) > 0).sort((a, b) => a.start - b.start).map(s => {
+          const sub = subject(s.subjectId), task = S.tasks.find(t => t.id === s.taskId);
+          return `<li><span class="num">${clock(s.start)}–${clock(s.end)}</span>
+            <span class="grow">${sub ? dot(sub.color) + esc(sub.name) : 'Other'}${task ? ` <small>${esc(task.title)}</small>` : ''}</span>
+            <span class="num">${hm(overlap(s, calDay, end))}</span></li>`;
+        }).join('');
+        detail = `<h2>${new Date(calDay).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
+          ${list ? `${subjectBars(calDay, end)}<ul class="list">${list}</ul>` : '<p class="muted">Nothing tracked this day.</p>'}`;
+      }
+
+      return `<div class="row">
+          <button id="cal-prev" data-click="calMove" data-id="-1" aria-label="Previous month">‹</button>
+          <h2 class="grow">${first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</h2>
+          <button id="cal-next" data-click="calMove" data-id="1" aria-label="Next month">›</button>
+        </div>
+        <div class="cal">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<span aria-hidden="true">${d}</span>`).join('')}${blanks}${cells}</div>
+        ${detail}`;
+    },
+    actions: {
+      calMove(el) { calMonth += Number(el.dataset.id); },
+      calPick(el) { calDay = calDay === Number(el.dataset.id) ? null : Number(el.dataset.id); },
     },
   },
 
@@ -346,9 +408,25 @@ const MODULES = [
   },
 
   {
-    id: 'break', name: 'Break reminder',
+    id: 'break', name: 'Breaks',
     render() {
-      return `<div class="row">
+      const bt = S.breakTimer;
+      const controls = bt.endsAt
+        ? '<button id="brk-cancel" data-click="breakCancel">Cancel</button>'
+        : `${[5, 10, 15].map(n => `<button id="brk-${n}" data-click="breakStart" data-id="${n}">${n} min</button>`).join('')}
+          <form data-submit="breakStart">
+            <label for="brk-min">Custom (min)</label>
+            <input type="number" id="brk-min" name="min" min="1" max="180" value="${Number(bt.min)}">
+            <button id="brk-go">Start</button>
+          </form>`;
+      return `<h2>Break timer</h2>
+        ${bt.endsAt ? '<p class="big" id="brk-left"></p>' : ''}
+        <div class="row">${controls}</div>
+        <h2>Rest</h2>
+        <p id="rest-now"></p>
+        <p>Rest today (gaps between sessions): <b class="num" id="rest-today"></b></p>
+        <h2>Reminder</h2>
+        <div class="row">
           <label for="break-every">Remind me to take a break after</label>
           <input type="number" id="break-every" min="5" max="240" value="${Number(S.breakEvery)}" data-change="breakEvery">
           <span>minutes of continuous timing.</span>
@@ -356,15 +434,37 @@ const MODULES = [
         <p class="muted">Counts from when the current study or task timer started.</p>`;
     },
     tick(now) {
-      const r = S.running;
+      const r = S.running, bt = S.breakTimer;
       if (r && !r.reminded && now - r.start >= S.breakEvery * 60000) {
         r.reminded = true;
         save();
         notify('Take a break', `You have been focused for ${S.breakEvery} minutes.`);
       }
+      if (bt.endsAt && now >= bt.endsAt) {
+        bt.endsAt = null;
+        save();
+        render();
+        notify('Break over', 'back to work.');
+        return;
+      }
+      const left = $('#brk-left'), rest = $('#rest-now'), restT = $('#rest-today');
+      if (left) left.textContent = mmss(bt.endsAt - now);
+      if (rest) {
+        const last = Math.max(0, ...S.sessions.map(s => s.end));
+        rest.textContent = r ? 'A timer is running.' : last ? `Resting for ${hms(now - last)}` : 'No sessions yet.';
+      }
+      if (restT) restT.textContent = hms(restToday());
     },
     actions: {
       breakEvery(el) { S.breakEvery = Math.max(1, Number(el.value) || 50); },
+      breakStart(el) {
+        const min = Number(el.dataset.id || el.elements.min.value) || 10;
+        if (!el.dataset.id) S.breakTimer.min = min;
+        stopTimer();
+        S.breakTimer.endsAt = Date.now() + min * 60000;
+        askNotify();
+      },
+      breakCancel() { S.breakTimer.endsAt = null; },
     },
   },
 
@@ -469,7 +569,10 @@ function tick() {
   MODULES.filter(isOn).forEach(m => m.tick?.(now));
   const r = S.running, p = S.pomo, el = $('#now-time');
   if (el && r) el.textContent = hms(now - r.start);
-  document.title = r ? `${hms(now - r.start)} · FocusKit` : p.endsAt ? `${mmss(p.endsAt - now)} · FocusKit` : 'FocusKit';
+  const bt = S.breakTimer.endsAt;
+  document.title = r ? `${hms(now - r.start)} · FocusKit`
+    : bt > now ? `Break ${mmss(bt - now)} · FocusKit`
+    : p.endsAt > now ? `${mmss(p.endsAt - now)} · FocusKit` : 'FocusKit';
 }
 
 // One delegated listener per event type: elements name their action in data-click / data-change / data-input / data-submit.
