@@ -12,6 +12,7 @@ const DEFAULTS = () => ({
   running: null,        // { subjectId, taskId, start, reminded }: the one live timer
   tasks: [],            // { id, title, subjectId, estimate (min), done }
   pomo: { focusMin: 25, breakMin: 5, mode: 'focus', endsAt: null, left: null },
+  watch: { start: null, elapsed: 0, laps: [] },   // standalone stopwatch; laps are running totals in ms
   ddays: [],            // { id, name, date: 'YYYY-MM-DD' }
   breakEvery: 50,       // minutes of continuous timing before a break reminder
   notes: '',
@@ -23,6 +24,7 @@ function merge(d) {
   for (const k in s)
     if (d[k] != null && typeof d[k] === typeof s[k] && Array.isArray(d[k]) === Array.isArray(s[k])) s[k] = d[k];
   s.pomo = { ...DEFAULTS().pomo, ...s.pomo };
+  s.watch = { ...DEFAULTS().watch, ...s.watch };
   return s;
 }
 
@@ -39,6 +41,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const pad = n => String(Math.floor(n)).padStart(2, '0');
 const hms = ms => { const s = ms / 1000; return `${pad(s / 3600)}:${pad(s / 60 % 60)}:${pad(s % 60)}`; };
 const mmss = ms => { const s = Math.ceil(ms / 1000); return `${pad(s / 60)}:${pad(s % 60)}`; };
+const hmst = ms => `${hms(ms)}.${Math.floor(ms / 100 % 10)}`;
 const hm = ms => { const m = Math.floor(ms / 60000); return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${pad(m % 60)}m`; };
 const daysAgo = n => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate() - n).getTime(); };
 const subject = id => S.subjects.find(s => s.id === id);
@@ -100,6 +103,7 @@ function bar(label, ms, max, color = 'var(--accent)') {
     <div class="track"><div class="fill" style="width:${(ms / max * 100).toFixed(1)}%;background:${esc(color)}"></div></div>
     <span class="num">${hm(ms)}</span></div>`;
 }
+const watchTime = now => S.watch.elapsed + (S.watch.start ? now - S.watch.start : 0);
 const pomoLeft = now => {
   const p = S.pomo;
   return p.endsAt ? p.endsAt - now : p.left ?? (p.mode === 'focus' ? p.focusMin : p.breakMin) * 60000;
@@ -149,6 +153,34 @@ const MODULES = [
         const f = form.elements;
         S.subjects.push({ id: uid(), name: f.name.value.trim() || 'Subject', color: f.color.value });
       },
+    },
+  },
+
+  {
+    id: 'watch', name: 'Stopwatch',
+    render() {
+      const w = S.watch;
+      const laps = w.laps.map((t, i) => `<li><span class="grow">Lap ${i + 1}</span>
+        <span class="num">${hmst(t - (w.laps[i - 1] || 0))}</span><span class="num muted">${hmst(t)}</span></li>`).reverse().join('');
+      return `<p class="big" id="watch-time"></p>
+        <div class="row">
+          <button id="watch-go" data-click="watchGo">${w.start ? 'Pause' : 'Start'}</button>
+          <button id="watch-lap" data-click="watchLap" ${w.start ? '' : 'disabled'}>Lap</button>
+          <button id="watch-reset" data-click="watchReset">Reset</button>
+        </div>
+        ${laps ? `<ul class="list" aria-label="Laps">${laps}</ul>` : ''}`;
+    },
+    tick(now) {
+      const el = $('#watch-time');
+      if (el) el.textContent = hmst(watchTime(now));
+    },
+    actions: {
+      watchGo() {
+        const w = S.watch, now = Date.now();
+        if (w.start) { w.elapsed += now - w.start; w.start = null; } else w.start = now;
+      },
+      watchLap() { S.watch.laps.push(watchTime(Date.now())); },
+      watchReset() { S.watch = { start: null, elapsed: 0, laps: [] }; },
     },
   },
 
@@ -451,5 +483,5 @@ for (const type of ['click', 'change', 'input', 'submit']) {
 }
 addEventListener('hashchange', render);
 addEventListener('storage', e => { if (e.key === KEY) { S = merge(JSON.parse(e.newValue) || {}); render(); } });
-setInterval(tick, 1000);
+setInterval(tick, 100);   // 100ms so the stopwatch shows tenths
 render();

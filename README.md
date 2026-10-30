@@ -5,6 +5,7 @@ A simple study and productivity app: study stopwatch, tasks, pomodoro and more. 
 ## Features
 Each one can be turned on or off in **Settings**:
 - Study timer
+- Stopwatch (with laps)
 - Tasks
 - Pomodoro
 - Stats
