@@ -1,0 +1,25 @@
+/* Today */
+.today-hero { display: flex; flex-direction: column; gap: 6px; padding: 12px 2px 6px; }
+.today-hero .display { margin-top: 2px; }
+.today-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.quick-add {
+  display: flex; align-items: center; gap: 10px; height: 46px; margin: 0 0 10px; padding: 0 10px 0 14px;
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--input); transition: border-color var(--t), box-shadow var(--t);
+}
+.quick-add:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.quick-add input { flex: 1; height: 44px !important; padding: 0 !important; border: 0 !important; background: none !important; box-shadow: none !important; }
+.quick-ico { display: grid; color: var(--accent); }
+.task-main { display: flex; flex-direction: column; gap: 3px; }
+.task-title { font-weight: 500; overflow-wrap: anywhere; }
+.task-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+.task-time { font-size: 13px; white-space: nowrap; }
+.task-row .btn-ghost { opacity: .55; }
+.task-row:hover .btn-ghost, .task-row .btn-ghost:focus-visible { opacity: 1; }
+.focus-card { display: flex; flex-direction: column; align-items: center; }
+.focus-card .card-head { align-self: stretch; }
+.now-live, .now-idle { display: flex; flex-direction: column; gap: 8px; }
+.now-label { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.now-live .big-time { margin: 2px 0 6px; font-size: 38px; }
+.now-idle .btn-block { margin-top: 6px; }
+@media (max-width: 1060px) { .today-grid { grid-template-columns: 1fr; } .today-side { display: grid; grid-template-columns: 1fr 1fr; } }
+@media (max-width: 720px) { .today-side { grid-template-columns: 1fr; } }

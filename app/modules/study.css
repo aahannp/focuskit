@@ -1,0 +1,21 @@
+/* Study */
+.study-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 34px 20px 26px; text-align: center;
+  background: radial-gradient(420px 180px at 50% 0%, var(--accent-soft), transparent 75%), var(--card); }
+.study-total { font-size: 64px; font-weight: 700; letter-spacing: -.045em; line-height: 1.05; }
+.study-hero.live .study-total { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.study-stats { display: flex; gap: 40px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.study-stats > div { display: flex; flex-direction: column; gap: 2px; min-width: 110px; }
+.study-stats b { font-weight: 600; font-size: 15px; }
+.subjects > li { min-height: 58px; }
+.subjects > li.on { background: color-mix(in srgb, var(--c) 12%, transparent); }
+.subject-play {
+  width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--c);
+}
+.subject-play:hover { background: color-mix(in srgb, var(--c) 28%, transparent); }
+.subject.on .subject-play { background: var(--c); color: #fff; box-shadow: 0 6px 18px -6px var(--c); }
+.subject-play .ico { margin: 0; }
+.subject-name { font-weight: 550; }
+.subject-time { font-size: 15px; font-weight: 600; color: var(--muted); }
+.subject.on .subject-time { color: var(--fg); }
+.view-study .add-row { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }

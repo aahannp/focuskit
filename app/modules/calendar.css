@@ -1,0 +1,28 @@
+/* Calendar */
+.cal-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.cal-head h3 { font-size: 18px; }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.cal-dow { padding: 0 8px 4px; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); }
+.day {
+  --lvl: 0%;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px;
+  height: auto; min-height: 84px; padding: 8px 9px; border: 1px solid var(--line); border-radius: var(--r);
+  background: color-mix(in srgb, var(--accent) var(--lvl), var(--card-2)); text-align: left; white-space: normal; overflow: hidden;
+}
+.day:hover { border-color: var(--accent-line); background: color-mix(in srgb, var(--accent) var(--lvl), var(--card-2)); }
+.day.lvl1 { --lvl: 18%; } .day.lvl2 { --lvl: 36%; } .day.lvl3 { --lvl: 58%; } .day.lvl4 { --lvl: 82%; }
+.day.lvl3, .day.lvl4 { color: #fff; border-color: transparent; }
+[data-theme="light"] .day.lvl3 { color: var(--fg); }
+.day.future { background: transparent; border-style: dashed; }
+.day-n { font-size: 13px; font-weight: 600; }
+.day.today .day-n { display: grid; place-items: center; width: 24px; height: 24px; margin: -3px 0 0 -4px; border-radius: 50%; background: var(--fg); color: var(--bg); }
+.day-ms { margin-top: auto; font-size: 12.5px; font-weight: 600; }
+.day-dd { display: flex; align-items: center; gap: 3px; max-width: 100%; font-size: 11px; color: var(--warn); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.day-dd .ico { width: 11px; height: 11px; }
+.day[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cal-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 14px; }
+.cal-legend i { width: 12px; height: 12px; border-radius: 3px; background: color-mix(in srgb, var(--accent) var(--lvl, 0%), var(--card-2)); }
+.cal-legend .lvl1 { --lvl: 18%; } .cal-legend .lvl2 { --lvl: 36%; } .cal-legend .lvl3 { --lvl: 58%; } .cal-legend .lvl4 { --lvl: 82%; }
+.cal-legend span { margin: 0 4px; }
+.cal-detail .list > li { min-height: 38px; gap: 16px; }
+@media (max-width: 720px) { .day { min-height: 56px; } .day-ms, .day-dd { display: none; } .cal-sum { display: none; } }

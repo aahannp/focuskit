@@ -1,0 +1,5 @@
+/* Notes */
+.notes-card { display: flex; flex-direction: column; gap: 10px; padding: 8px; }
+.notes-card textarea { min-height: calc(100vh - 210px); padding: 18px 20px; border: 0; background: transparent; font-size: 15px; line-height: 1.75; resize: none; }
+.notes-card textarea:focus { box-shadow: none; }
+.notes-foot { padding: 0 20px 10px; }

@@ -1,0 +1,13 @@
+/* D-Day */
+.view-dday .add-row { padding: 12px; }
+.dday-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.dday { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 22px 20px 18px; overflow: hidden; }
+.dday::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: var(--grad); }
+.dday-n { font-size: 38px; font-weight: 700; letter-spacing: -.04em; line-height: 1.1; }
+.dday.now .dday-n { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.dday.past { opacity: .6; }
+.dday.past::before { background: var(--line-2); }
+.dday-name { font-weight: 600; overflow-wrap: anywhere; }
+.dday-del { position: absolute; top: 12px; right: 12px; opacity: 0; }
+.dday:hover .dday-del, .dday-del:focus-visible { opacity: 1; }
+@media (hover: none) { .dday-del { opacity: 1; } }
