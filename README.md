@@ -9,8 +9,9 @@ Each one can be turned on or off in **Settings**:
 - Tasks
 - Pomodoro
 - Stats
+- Calendar (study time per day, click a day for details)
 - D-Day
-- Break reminder
+- Breaks (break countdown, rest time, break reminder)
 - Notes
 
 ## Download (Windows)
