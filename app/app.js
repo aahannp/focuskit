@@ -161,7 +161,7 @@ const MODULES = [
         return `<li class="${t.done ? 'done' : ''} ${on ? 'on' : ''}">
           <input type="checkbox" id="done-${id}" data-change="taskDone" data-id="${id}" ${t.done ? 'checked' : ''}>
           <label class="grow" for="done-${id}">${esc(t.title)}${sub ? ` <small>${dot(sub.color)}${esc(sub.name)}</small>` : ''}</label>
-          <span class="num"><span data-task="${id}" data-est="${t.estimate || 0}"></span>${t.estimate ? ` / ${hm(t.estimate * 60000)}` : ''}</span>
+          <span class="num"><span data-task="${id}" data-est="${Number(t.estimate) || 0}"></span>${t.estimate ? ` / ${hm(t.estimate * 60000)}` : ''}</span>
           ${t.done ? '' : `<button id="run-${id}" data-click="taskRun" data-id="${id}">${on ? 'Stop' : 'Start'}</button>`}
           <button id="del-${id}" data-click="taskDel" data-id="${id}" aria-label="Delete ${esc(t.title)}">×</button></li>`;
       }).join('');
@@ -215,9 +215,9 @@ const MODULES = [
         </div>
         <div class="row">
           <label for="pomo-focus">Focus (min)</label>
-          <input type="number" id="pomo-focus" min="1" max="180" value="${p.focusMin}" data-change="pomoLen" data-id="focusMin">
+          <input type="number" id="pomo-focus" min="1" max="180" value="${Number(p.focusMin)}" data-change="pomoLen" data-id="focusMin">
           <label for="pomo-break">Break (min)</label>
-          <input type="number" id="pomo-break" min="1" max="60" value="${p.breakMin}" data-change="pomoLen" data-id="breakMin">
+          <input type="number" id="pomo-break" min="1" max="60" value="${Number(p.breakMin)}" data-change="pomoLen" data-id="breakMin">
         </div>`;
     },
     tick(now) {
@@ -318,7 +318,7 @@ const MODULES = [
     render() {
       return `<div class="row">
           <label for="break-every">Remind me to take a break after</label>
-          <input type="number" id="break-every" min="5" max="240" value="${S.breakEvery}" data-change="breakEvery">
+          <input type="number" id="break-every" min="5" max="240" value="${Number(S.breakEvery)}" data-change="breakEvery">
           <span>minutes of continuous timing.</span>
         </div>
         <p class="muted">Counts from when the current study or task timer started.</p>`;
