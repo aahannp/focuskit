@@ -13,9 +13,25 @@
     "electron-builder": "26.18.0"
   },
   "build": {
+    "publish": [{ "provider": "github", "owner": "aahannp", "repo": "focuskit" }],
     "appId": "com.aahannp.focuskit",
-    "files": ["main.js", "app/**/*"],
-    "win": { "target": ["nsis", "portable"] },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+    "files": [
+      "main.js",
+      "app/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "electron-updater": "6.8.11"
   }
 }

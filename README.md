@@ -16,6 +16,9 @@ Each one can be turned on or off in **Settings**:
 ## Download (Windows)
 Go to the **Releases** page, download the `.exe` (installer, or the portable one that needs no install) and run it.
 
+## Updates
+The installer version updates itself from GitHub Releases each time you launch it. The portable `.exe` does not. To ship an update, bump nothing — just push a new tag like `v1.0.1`.
+
 ## Run in a browser
 Open `app/index.html` in any browser.
 

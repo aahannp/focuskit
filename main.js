@@ -1,5 +1,6 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
+const { autoUpdater } = require('electron-updater');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -21,5 +22,15 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+function checkForUpdates() {
+  autoUpdater.checkForUpdatesAndNotify().catch((e) => console.error('update check failed:', e));
+}
+
+app.whenReady().then(() => {
+  createWindow();
+  if (app.isPackaged) {
+    checkForUpdates();
+    setInterval(checkForUpdates, 4 * 60 * 60 * 1000);
+  }
+});
 app.on('window-all-closed', () => app.quit());
