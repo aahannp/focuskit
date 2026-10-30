@@ -1,0 +1,78 @@
+/* Focus */
+.view-focus .focus-wrap {
+  display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 30px;
+  border: 1px solid var(--line); border-radius: var(--r-xl); box-shadow: var(--shadow);
+  background: radial-gradient(520px 300px at 50% 42%, var(--accent-soft), transparent 72%), var(--card);
+  transition: background var(--t);
+}
+.view-focus .focus-wrap.is-break { --accent: var(--ok); --accent-2: #14b8a6; }
+.view-focus .focus-wrap.is-break .ring-fill { stroke: var(--ok); }
+.view-focus .focus-wrap.zen {
+  position: fixed; inset: 0; z-index: 30; justify-content: center; padding: 24px 32px;
+  border: 0; border-radius: 0; box-shadow: none;
+  background: radial-gradient(720px 420px at 50% 46%, var(--accent-soft), transparent 72%), var(--bg);
+}
+.view-focus .zen .focus-top { position: absolute; top: 20px; left: 32px; right: 32px; }
+.view-focus .zen .focus-pick, .view-focus .zen #focus-complete { display: none; }
+.view-focus .focus-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.view-focus #focus-zen[aria-pressed="true"] { color: var(--fg); }
+
+.view-focus .focus-stage { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 6px 0 4px; text-align: center; }
+.view-focus .focus-task { display: flex; flex-direction: column; align-items: center; gap: 8px; max-width: 640px; }
+.view-focus .focus-title { font-size: 28px; font-weight: 700; letter-spacing: -.03em; line-height: 1.2; overflow-wrap: anywhere; }
+.view-focus .focus-pick select { height: 32px; min-width: 220px; max-width: 360px; border-radius: 999px; background-color: var(--card-2); font-size: 13px; color: var(--muted); }
+.view-focus .ring { margin: 6px 0 -2px; }
+.view-focus .ring-label b { font-size: 64px; font-weight: 650; letter-spacing: -.05em; }
+.view-focus .is-on .ring-label b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.view-focus .focus-phase { text-transform: uppercase; letter-spacing: .14em; font-size: 11.5px; font-weight: 600; }
+.view-focus .is-on .ring svg { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 35%, transparent)); }
+
+.view-focus .focus-dots { display: flex; gap: 8px; }
+.view-focus .focus-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line-2); transition: background var(--t); }
+.view-focus .focus-dots span.on { background: var(--grad); box-shadow: 0 0 8px -1px var(--accent); }
+.view-focus .focus-controls { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 46px; }
+.view-focus .focus-main { min-width: 156px; }
+.view-focus .focus-controls .btn-icon.btn-lg { width: 46px; }
+.view-focus .focus-hint { max-width: 46ch; }
+.view-focus #focus-complete { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+.view-focus #focus-complete:hover { color: var(--ok); }
+.view-focus #focus-complete .ico { width: 15px; height: 15px; }
+
+.view-focus .focus-panels .card { display: flex; flex-direction: column; }
+.view-focus .focus-subs > li { min-height: 40px; }
+.view-focus .focus-none { margin-bottom: 4px; }
+.view-focus .focus-sub-add { margin-top: 10px; flex-wrap: nowrap; }
+.view-focus #focus-notes { flex: 1; width: 100%; min-height: 150px; }
+.view-focus .focus-hint-card .empty { padding: 22px 16px; }
+
+.view-focus .focus-settings { padding: 0; }
+.view-focus .focus-settings summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px;
+  list-style: none; cursor: pointer; font-weight: 600; border-radius: var(--r-lg);
+}
+.view-focus .focus-settings summary::-webkit-details-marker { display: none; }
+.view-focus .focus-settings summary > span:first-child { display: inline-flex; align-items: center; gap: 9px; }
+.view-focus .focus-settings summary .ico { color: var(--muted); }
+.view-focus .focus-set-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 28px; padding: 0 20px 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+.view-focus .focus-set { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; color: var(--muted); }
+.view-focus .focus-set input[type="number"] { width: 78px; text-align: right; }
+
+/* idle + procrastination dialogs live in the shared #modal */
+.focus-idle { display: flex; flex-direction: column; gap: 16px; }
+.focus-idle .stack { gap: 8px; }
+.focus-pro-lead { margin-bottom: 12px; }
+.focus-tips { display: flex; flex-direction: column; gap: 6px; }
+.focus-tips details { border: 1px solid var(--line); border-radius: var(--r); background: var(--card-2); transition: border-color var(--t); }
+.focus-tips details[open] { border-color: var(--accent-line); }
+.focus-tips summary { padding: 11px 14px; cursor: pointer; font-weight: 600; list-style: none; }
+.focus-tips summary::-webkit-details-marker { display: none; }
+.focus-tips summary::after { content: "›"; float: right; color: var(--faint); transition: transform var(--t); }
+.focus-tips details[open] summary::after { transform: rotate(90deg); }
+.focus-tips p { padding: 0 14px 10px; color: var(--muted); }
+.focus-tips button { margin: 0 14px 14px; }
+
+@media (max-width: 720px) {
+  .view-focus .ring { --size: 240px !important; }
+  .view-focus .ring-label b { font-size: 50px; }
+  .view-focus .focus-title { font-size: 22px; }
+}
