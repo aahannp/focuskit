@@ -1,0 +1,21 @@
+{
+  "name": "focuskit",
+  "productName": "FocusKit",
+  "version": "1.0.0",
+  "description": "Customizable study and productivity app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis portable --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.1.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.aahannp.focuskit",
+    "files": ["main.js", "app/**/*"],
+    "win": { "target": ["nsis", "portable"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}
