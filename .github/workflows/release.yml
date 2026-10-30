@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -30,8 +30,20 @@ jobs:
             dist/*.exe
             dist/*.exe.blockmap
             dist/latest.yml
+
+  # Only this job can write to Releases; the build (npm install, electron-builder) stays read-only.
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: focuskit-windows
+          path: dist
       - uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             dist/*.exe
