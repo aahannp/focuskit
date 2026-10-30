@@ -1,0 +1,60 @@
+/* Habits */
+.hab-top { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.hab-sum { margin-top: 4px; font-size: 18px; }
+.hab-progress { max-width: 340px; margin-top: 10px; height: 6px; }
+.hab-add { flex-wrap: nowrap; }
+.hab-add #hab-name { width: 220px; }
+.hab-x { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.hab-x input { width: 64px; }
+
+.hab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.hab {
+  display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 14px;
+  background: radial-gradient(240px 110px at 0% 0%, color-mix(in srgb, var(--c) 10%, transparent), transparent 75%), var(--card);
+  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+}
+.hab:hover { border-color: color-mix(in srgb, var(--c) 30%, var(--line)); }
+.hab.done { border-color: color-mix(in srgb, var(--c) 45%, var(--line)); }
+.hab-head { display: flex; align-items: center; gap: 6px; min-height: 30px; }
+.hab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hab-tools { opacity: 0; transition: opacity var(--t); }
+.hab:hover .hab-tools, .hab:focus-within .hab-tools { opacity: 1; }
+@media (hover: none) { .hab-tools { opacity: 1; } }
+
+.hab-body { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hab .ring-fill { stroke: var(--c); }
+.hab .ring-track { stroke: color-mix(in srgb, var(--c) 14%, var(--card-2)); }
+.hab .ring-label b { font-size: 26px; }
+.hab-check { position: absolute; top: -18px; width: 16px; height: 16px; color: var(--c); stroke-width: 3; }
+.hab-btns { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.hab-plus {
+  width: 52px; height: 52px; border: 0; border-radius: 16px; background: var(--c); color: #fff;
+  box-shadow: 0 10px 22px -12px var(--c), inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+.hab-plus:hover { background: var(--c); filter: brightness(1.1); border: 0; }
+.hab-plus:active { transform: scale(.94); }
+.hab-plus .ico { width: 22px; height: 22px; stroke-width: 2.4; }
+.hab-minus { width: 36px; height: 30px; font-size: 18px; }
+
+.hab-week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+.hab-week li { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--faint); }
+.hab-week i {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: conic-gradient(color-mix(in srgb, var(--c) 55%, transparent) var(--p), var(--card-2) 0);
+}
+.hab-week .met i { background: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 18%, transparent); }
+.hab-week li:last-child span { color: var(--fg); font-weight: 600; }
+.hab-streak { display: flex; align-items: center; justify-content: space-between; }
+.hab-streak > span:first-child { display: inline-flex; align-items: center; gap: 5px; }
+.hab-streak .ico { width: 14px; height: 14px; }
+.hab-fire { color: var(--fg); }
+.hab-fire .ico { color: var(--c); }
+.hab-fire b { font-weight: 650; }
+
+.hab-form { display: flex; flex-direction: column; gap: 14px; }
+.hab-form label { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.hab-form input:not([type="color"]) { width: 100%; color: var(--fg); }
+.hab-form-row { display: flex; gap: 12px; }
+.hab-form-row label:first-child { flex: 1; }
+
+@media (max-width: 720px) { .hab-add { flex-wrap: wrap; } .hab-add #hab-name { width: auto; flex: 1; } }

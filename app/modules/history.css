@@ -1,0 +1,60 @@
+/* History */
+.hist-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.hist-main { gap: 12px; }
+.hist-side { position: sticky; top: 0; }
+.hist-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.hist-head h3 { font-size: 18px; }
+.hist-head p { margin-top: 2px; }
+.hist-head b { color: var(--fg); font-weight: 650; }
+
+.hist-day { padding: 12px 16px 12px 12px; }
+.hist-day-head { display: flex; align-items: center; gap: 12px; }
+.hist-toggle {
+  height: 36px; padding: 0 10px 0 6px; border: 0; background: transparent; color: var(--fg); font-size: 14.5px;
+}
+.hist-toggle:hover { background: var(--card-2); border-color: transparent; }
+.hist-toggle:disabled { opacity: 1; cursor: default; }
+.hist-toggle:disabled .hist-chev { visibility: hidden; }
+.hist-chev { color: var(--faint); transition: transform var(--t); }
+.hist-toggle[aria-expanded="true"] .hist-chev { transform: rotate(90deg); color: var(--accent); }
+.hist-date { font-weight: 400; color: var(--muted); }
+.hist-date b { font-weight: 650; color: var(--fg); letter-spacing: -.01em; }
+.hist-total { font-size: 16px; font-weight: 700; letter-spacing: -.02em; min-width: 5.5em; text-align: right; }
+.hist-rating { color: var(--warn); font-size: 13px; letter-spacing: 1px; }
+.hist-rating span { color: var(--line-2); }
+.hist-note { margin: 2px 0 0 38px; font-style: italic; }
+
+.hist-rows { margin: 6px 0 0 26px; }
+.hist-rows > li, .hist-sessions > li { min-height: 38px; padding: 4px 10px; gap: 12px; }
+.hist-rows .dot { margin: 0; }
+.hist-what { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.hist-what .title { font-weight: 500; margin-right: 2px; overflow-wrap: anywhere; }
+.hist-rows li.gone .title { color: var(--faint); font-style: italic; }
+.hist-share { flex: none; width: 90px; height: 5px; border-radius: 999px; background: var(--card-2); overflow: hidden; }
+.hist-share span { display: block; height: 100%; border-radius: inherit; background: var(--accent-line); }
+.hist-ms { min-width: 5.5em; text-align: right; color: var(--muted); font-weight: 550; }
+
+.hist-sessions { margin: 10px 0 0 26px; padding-top: 6px; border-top: 1px dashed var(--line); }
+.hist-span { min-width: 9.5em; color: var(--muted); font-size: 13px; }
+.hist-sessions .btn-ghost { opacity: .5; }
+.hist-sessions li:hover .btn-ghost, .hist-sessions .btn-ghost:focus-visible { opacity: 1; }
+
+.hist-ts .card-head .ico { width: 16px; height: 16px; }
+.hist-seg { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+.hist-seg > button { padding: 0 6px; }
+.hist-custom { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.hist-custom label, .hist-form label { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.hist-custom input { width: 100%; padding: 0 8px; font-size: 13px; }
+.hist-ts-sum { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 16px 0; padding: 16px 8px; border-radius: var(--r); background: var(--card-2); }
+.hist-ts-sum b { font-size: 30px; font-weight: 700; letter-spacing: -.035em; line-height: 1.2; }
+.hist-ts-btns { gap: 8px; }
+
+/* modal forms (rendered in the shared dialog, outside .view-history) */
+.hist-form { display: flex; flex-direction: column; gap: 14px; }
+.hist-form select, .hist-form input { width: 100%; color: var(--fg); }
+.hist-form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.hist-form-foot { padding-top: 4px; }
+.hist-copy { width: 100%; font: 13px/1.55 var(--mono); }
+
+@media (max-width: 1060px) { .hist-grid { grid-template-columns: 1fr; } .hist-side { position: static; order: -1; } }
+@media (max-width: 720px) { .hist-share, .hist-day-head .small { display: none; } .hist-rows, .hist-sessions { margin-left: 0; } }

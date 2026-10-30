@@ -1,0 +1,82 @@
+/* Metrics */
+.mx-top { flex-wrap: wrap; }
+
+/* hover tips: [data-tip] on chart marks */
+.view-metrics [data-tip] { position: relative; }
+.view-metrics [data-tip]:hover::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; z-index: 5; transform: translateX(-50%);
+  padding: 5px 9px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--card-2); color: var(--fg);
+  box-shadow: var(--shadow-lg); font: 500 12px var(--font); white-space: nowrap; pointer-events: none;
+}
+
+/* KPI cards */
+.mx-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.mx-kpi { position: relative; display: flex; flex-direction: column; gap: 3px; padding: 16px 18px; overflow: hidden; }
+.mx-kpi .eyebrow { padding-right: 34px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mx-kpi b { font-size: 26px; font-weight: 700; letter-spacing: -.035em; line-height: 1.25; white-space: nowrap; }
+.mx-kpi:first-child { background: radial-gradient(260px 120px at 100% 0%, var(--accent-soft), transparent 70%), var(--card); }
+.mx-kpi:first-child b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.mx-kpi-ico { position: absolute; top: 14px; right: 14px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: var(--card-2); color: var(--faint); }
+.mx-kpi-ico .ico { width: 15px; height: 15px; }
+
+/* bar chart */
+.mx-goal-key { display: inline-flex; align-items: center; gap: 6px; }
+.mx-goal-key i { width: 16px; border-top: 2px dashed var(--faint); }
+.mx-chart {
+  position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 2px; align-items: end;
+  height: 220px; padding: 22px 0 22px; border-bottom: 1px solid var(--line);
+  background: linear-gradient(var(--line), var(--line)) 0 22px / 100% 1px no-repeat,
+    linear-gradient(color-mix(in srgb, var(--line) 60%, transparent), color-mix(in srgb, var(--line) 60%, transparent)) 0 calc(22px + (100% - 44px) / 2) / 100% 1px no-repeat;
+}
+.mx-axis, .mx-goal { position: absolute; left: 0; bottom: calc(22px + (100% - 44px) * var(--g)); pointer-events: none; }
+.mx-axis { font-size: 11px; line-height: 16px; color: var(--faint); }
+.mx-goal { right: 0; z-index: 1; border-top: 2px dashed color-mix(in srgb, var(--fg) 35%, transparent); }
+.mx-col { position: relative; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; min-width: 0; }
+.mx-col::before { content: ""; position: absolute; inset: 0 -1px; border-radius: 6px; transition: background var(--t); }
+.mx-col:hover::before { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+.mx-bar {
+  position: relative; display: block; width: min(100%, 34px); min-height: 0; margin: 0 auto; border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--accent) 70%, var(--card)); transition: height .4s var(--ease), background var(--t);
+}
+.mx-bar.met { background: var(--grad); }
+.mx-col:hover .mx-bar { background: var(--accent); }
+.mx-x { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--faint); white-space: nowrap; }
+
+/* breakdowns */
+.mx-break .bar { grid-template-columns: minmax(0, 8.5em) 1fr 4.6em; margin: 10px 0; font-size: 13.5px; }
+.mx-break .progress { height: 6px; }
+.mx-none { padding: 18px 0 8px; }
+
+/* heatmap */
+.mx-bottom { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: 18px; align-items: stretch; }
+.mx-heat-scroll { overflow-x: auto; padding-bottom: 4px; }
+/* cells stretch to fill the card; below min-width the wrapper scrolls (kept at the newest week by after()) */
+.mx-heat-wrap { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 4px 6px; min-width: 520px; }
+.mx-months { grid-column: 2; display: grid; grid-template-columns: repeat(53, minmax(0, 1fr)); gap: 3px; font-size: 11px; color: var(--faint); }
+.mx-months span { white-space: nowrap; }
+.mx-dows { display: grid; grid-template-rows: repeat(7, 1fr); gap: 3px; align-items: center; font-size: 10.5px; line-height: 1; color: var(--faint); }
+.mx-heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, auto); grid-auto-columns: minmax(0, 1fr); gap: 3px; }
+.mx-heat i { aspect-ratio: 1; }
+.mx-heat i, .mx-legend i { --lvl: 0%; display: block; border-radius: 3px; background: color-mix(in srgb, var(--accent) var(--lvl), var(--card-2)); }
+.mx-legend i { width: 11px; height: 11px; }
+.mx-heat i:hover { outline: 1.5px solid var(--fg); outline-offset: 1px; }
+.mx-heat .lvl1, .mx-legend .lvl1 { --lvl: 25%; } .mx-heat .lvl2, .mx-legend .lvl2 { --lvl: 48%; }
+.mx-heat .lvl3, .mx-legend .lvl3 { --lvl: 72%; } .mx-heat .lvl4, .mx-legend .lvl4 { --lvl: 100%; }
+.mx-heat .fut { background: transparent; }
+.mx-legend { margin-top: 10px; }
+
+/* day ratings */
+.mx-rate-card { display: flex; flex-direction: column; }
+.mx-avg { color: var(--warn); font-weight: 650; }
+.mx-rate { position: relative; flex: 1; min-height: 130px; margin-left: 18px; }
+.mx-rate-y { position: absolute; left: -18px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; font-size: 11px; color: var(--faint); }
+.mx-rate svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.mx-grid { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.mx-line { fill: none; stroke: var(--warn); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: .55; }
+.mx-dots { position: absolute; inset: 0; }
+.view-metrics .mx-dots i { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 0 2px var(--card); }
+.view-metrics .mx-dots i:hover { transform: scale(1.4); }
+
+@media (max-width: 1060px) { .mx-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .mx-bottom { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .mx-breaks { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .mx-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .mx-chart { height: 180px; } }
