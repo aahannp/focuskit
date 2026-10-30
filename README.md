@@ -1,35 +1,67 @@
 # FocusKit
 
-A simple study and productivity app: study stopwatch, tasks, pomodoro and more. No server, no account — your data stays in your browser/app (localStorage).
+FocusKit is a simple study and productivity app. It is inspired by [YPT](https://www.yeolpumta.com/en/) (study timer) and [Super Productivity](https://super-productivity.com/) (tasks and planning).
+
+It is local-first: no account, no server, no cloud. Your data stays on your device (localStorage). Every feature is a module, and you can switch any of them off in **Settings**.
 
 ## Features
-Each one can be turned on or off in **Settings**:
-- Study timer
-- Stopwatch (with laps)
-- Tasks
-- Pomodoro
-- Stats
-- Calendar (study time per day, click a day for details)
-- D-Day
-- Breaks (break countdown, rest time, break reminder)
-- Notes
 
-## Download (Windows)
-Go to the **Releases** page, download the `.exe` (installer, or the portable one that needs no install) and run it.
+- **Today**: your tasks for today, a planned timeline, focus time, quick add
+- **Tasks**: projects, tags, subtasks, notes, estimates, due dates, repeating tasks, filters
+- **Board**: Kanban (todo / doing / done) with drag and drop
+- **Matrix**: Eisenhower matrix with drag and drop
+- **Planner**: timeboxing, drag tasks onto today's hour grid
+- **Focus**: full-screen single task with Pomodoro, Flowtime or Countdown, break reminders, idle detection, anti-procrastination helper
+- **Study**: study timer by subject (YPT style)
+- **Stopwatch**
+- **History**: worklog per day, timesheet CSV export
+- **Stats & Metrics**: focus time, tasks done, streaks, per project / subject / tag, calendar heatmap, day ratings
+- **Habits**: counters and habits with streaks
+- **Projects**: notes and bookmarks per project
+- **D-Day**: countdowns to your dates
+- **Notes**
+- **Settings**: module toggles, dark/light theme, accent colour, export / import / reset
 
-## Updates
-The installer version updates itself from GitHub Releases each time you launch it. The portable `.exe` does not. To ship an update, bump nothing — just push a new tag like `v1.0.1`.
+## Keyboard shortcuts
 
-## Run in a browser
-Open `app/index.html` in any browser.
+| Key | Action |
+| --- | --- |
+| `Ctrl/Cmd + K` | Command palette |
+| `a` | Add task |
+| `s` | Start / stop current task |
+| `f` | Focus mode |
+| `g` then a letter | Go to a module |
+| `?` | Show shortcut help |
 
-## Run / build from source
+## Download
+
+Get the latest build from the [Releases](../../releases) page:
+
+- **Setup exe**: installs FocusKit and updates itself automatically.
+- **Portable exe**: runs without installing, but does not auto-update.
+
+The builds are not code-signed, so Windows SmartScreen may warn you. Click **More info → Run anyway**.
+
+## Run in the browser
+
+Open `app/index.html` in any modern browser. No build step, no server.
+
+## Build from source
+
 ```
-npm install
-npm start        # run the desktop app
-npm run dist     # build Windows .exe files into dist/
+npm ci
+npm start       # run in Electron
+npm run dist    # build Windows installers into dist/
 ```
-Pushing a tag like `v1.0.0` builds the .exe in GitHub Actions and attaches it to a Release.
 
-## Add a new feature
-Add one entry to the `MODULES` array in `app/app.js` (id, name, render function). It then shows up in Settings with its own on/off switch.
+## Add a module
+
+A module is one file in `app/modules/` (plus an optional `.css` with the same name). It registers itself with `FK.register({ id, name, icon, group, render, ... })`. See the Architecture section in [SPEC-v2.md](SPEC-v2.md) for the module shape.
+
+## Not included (on purpose)
+
+- Integrations (Jira, GitHub, etc.)
+- Cloud sync
+- Plugins
+
+These need servers or accounts, which goes against the simple, local-first idea. Use Settings → export / import to move your data.

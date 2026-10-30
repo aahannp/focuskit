@@ -6,9 +6,15 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1100,
     height: 750,
+    minWidth: 800,
+    minHeight: 560,
+    title: 'FocusKit',
+    backgroundColor: '#0b0d12',
+    show: false,
     autoHideMenuBar: true,
     webPreferences: { contextIsolation: true, nodeIntegration: false },
   });
+  win.once('ready-to-show', () => win.show());
   win.loadFile(path.join(__dirname, 'app', 'index.html'));
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);

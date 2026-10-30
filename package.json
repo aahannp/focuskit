@@ -1,7 +1,7 @@
 {
   "name": "focuskit",
   "productName": "FocusKit",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Customizable study and productivity app",
   "main": "main.js",
   "scripts": {
