@@ -1,0 +1,99 @@
+/* Tasks */
+.view-tasks [hidden] { display: none !important; }
+.view-tasks .tk-add {
+  display: flex; align-items: center; gap: 12px; height: 54px; padding: 0 12px 0 16px;
+  border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--card); box-shadow: var(--shadow);
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.view-tasks .tk-add:focus-within { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 4px var(--accent-soft); }
+.view-tasks .tk-add input { flex: 1; height: 52px !important; padding: 0 !important; border: 0 !important; background: none !important; box-shadow: none !important; font-size: 15px !important; }
+.view-tasks .tk-add-ico { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--grad); color: var(--on-accent); }
+.view-tasks .tk-add-ico .ico { width: 15px; height: 15px; }
+.view-tasks .tk-syntax { margin: -10px 4px 0; }
+.view-tasks .tk-syntax code { padding: 1px 6px; border-radius: 6px; background: var(--card-2); color: var(--muted); font: 500 11.5px var(--mono); white-space: nowrap; }
+
+.view-tasks .tk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.view-tasks .tk-count { margin-left: 6px; color: var(--faint); font-size: 12px; }
+.view-tasks .seg > button[aria-pressed="true"] .tk-count { color: var(--accent); }
+.view-tasks .tk-search { position: relative; display: flex; align-items: center; }
+.view-tasks .tk-search .ico { position: absolute; left: 10px; width: 16px; height: 16px; color: var(--faint); pointer-events: none; }
+.view-tasks .tk-search input { width: 220px; height: 36px; padding-left: 32px !important; }
+.view-tasks .tk-tags { gap: 6px; margin-top: -6px; }
+.view-tasks .tk-tags .chip { height: 28px; }
+.view-tasks .chip[aria-pressed="true"] { border-color: color-mix(in srgb, var(--c, var(--accent)) 55%, transparent); background: color-mix(in srgb, var(--c, var(--accent)) 16%, transparent); color: var(--fg); }
+
+.view-tasks .tk-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
+.view-tasks .tk-layout.has-detail { grid-template-columns: minmax(0, 1fr) 360px; }
+.view-tasks .tk-lists { gap: 14px; }
+.view-tasks .tk-card { padding: 8px; }
+.view-tasks .tk-group { display: flex; align-items: center; gap: 10px; padding: 8px 10px 6px; border-radius: var(--r); }
+.view-tasks .tk-group h3 { font-size: 14px; }
+.view-tasks .tk-group-ico { display: grid; place-items: center; width: 22px; color: var(--muted); }
+.view-tasks .tk-group-ico .dot { width: 10px; height: 10px; margin: 0; box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+.view-tasks .tk-group-ico .ico { width: 16px; height: 16px; }
+
+.view-tasks .tk-row { position: relative; gap: 10px; padding: 7px 8px 7px 10px; }
+.view-tasks .tk-row.open { background: var(--card-2); box-shadow: inset 2px 0 0 var(--accent); }
+.view-tasks .tk-row.on { background: var(--accent-soft); }
+.view-tasks .tk-grip { display: grid; place-items: center; width: 14px; margin: 0 -4px 0 -6px; color: var(--faint); opacity: 0; transition: opacity var(--t); }
+.view-tasks .tk-grip .ico { width: 14px; height: 14px; }
+.view-tasks .tk-row:hover .tk-grip, .view-tasks .tk-row:focus-visible .tk-grip { opacity: 1; }
+.view-tasks .tk-main { display: flex; flex-direction: column; gap: 4px; }
+.view-tasks .task-title { font-weight: 500; overflow-wrap: anywhere; cursor: pointer; }
+.view-tasks .task-meta { display: flex; flex-wrap: wrap; gap: 5px; }
+.view-tasks .task-meta .tag .dot { width: 7px; height: 7px; margin-right: 1px; }
+.view-tasks .tk-row.done .task-meta, .view-tasks .tk-row.done .tk-time { opacity: .55; }
+.view-tasks .tk-time { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 84px; color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+.view-tasks .tk-mini { display: block; width: 72px; height: 4px; border-radius: 99px; background: var(--card-2); overflow: hidden; }
+.view-tasks .tk-mini i { display: block; height: 100%; border-radius: inherit; background: var(--grad); transition: width .4s var(--ease); }
+.view-tasks .tk-time.over { color: var(--warn); }
+.view-tasks .tk-time.over .tk-mini i, .view-tasks .progress.over > span { background: var(--warn); }
+.view-tasks .tk-row .btn-ghost { opacity: .5; }
+.view-tasks .tk-row:hover .btn-ghost, .view-tasks .tk-row .btn-ghost:focus-visible, .view-tasks .tk-row.open .tk-more { opacity: 1; }
+.view-tasks .tk-more .ico { transition: transform var(--t); }
+.view-tasks .tk-row.open .tk-more .ico { transform: rotate(180deg); }
+
+/* detail panel */
+.view-tasks .tk-detail { position: sticky; top: 0; display: flex; flex-direction: column; gap: 16px; padding: 18px; animation: tk-in 180ms var(--ease); }
+@keyframes tk-in { from { opacity: 0; transform: translateX(8px); } }
+.view-tasks .tkd-parent { align-self: flex-start; gap: 4px; color: var(--muted); }
+.view-tasks .tkd-parent .ico { width: 14px; height: 14px; }
+.view-tasks .tkd-head { display: flex; align-items: center; gap: 10px; }
+.view-tasks .tkd-title { flex: 1; height: 40px !important; padding: 0 8px !important; margin-left: -4px; border-color: transparent !important; background: transparent !important; font: 650 17px var(--font) !important; letter-spacing: -.01em; }
+.view-tasks .tkd-title:hover { border-color: var(--line) !important; }
+.view-tasks .tkd-title:focus { border-color: var(--accent) !important; background: var(--input) !important; }
+.view-tasks .tkd-timer { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: var(--r); background: var(--card-2); }
+.view-tasks .tkd-timer .eyebrow { margin-bottom: 2px; }
+.view-tasks .tkd-spent { display: block; font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.view-tasks .tkd-timer .progress { height: 5px; margin-top: 8px; background: var(--line); }
+.view-tasks .tkd-fields { display: flex; flex-direction: column; }
+.view-tasks .tkd-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; border-bottom: 1px solid var(--line); }
+.view-tasks .tkd-field:last-child { border-bottom: 0; }
+.view-tasks .tkd-field > span:first-child { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); }
+.view-tasks .tkd-field > span:first-child .ico { width: 16px; height: 16px; color: var(--faint); }
+.view-tasks .tkd-field select, .view-tasks .tkd-field input { width: 168px; height: 34px; }
+.view-tasks .tkd-field input[type="number"] { width: 80px; }
+.view-tasks .tkd-sec { display: flex; flex-direction: column; gap: 8px; }
+.view-tasks .tkd-sec h4 { display: flex; gap: 6px; }
+.view-tasks .tkd-tags { gap: 6px; }
+.view-tasks .tkd-tags .chip { height: 28px; padding: 0 10px; }
+.view-tasks .tkd-inline input { width: 110px; height: 28px !important; border-radius: 999px; border-style: dashed; font-size: 13px; }
+.view-tasks .tkd-subs > li { min-height: 38px; padding: 4px 6px; gap: 10px; }
+.view-tasks .tkd-subs .check { width: 18px !important; height: 18px !important; }
+.view-tasks .tkd-subs .btn-ghost { opacity: 0; }
+.view-tasks .tkd-subs > li:hover .btn-ghost, .view-tasks .tkd-subs .btn-ghost:focus-visible { opacity: 1; }
+.view-tasks .tkd-addsub { display: flex; align-items: center; gap: 10px; padding: 0 8px; color: var(--faint); }
+.view-tasks .tkd-addsub .ico { width: 16px; height: 16px; margin: 0 1px; }
+.view-tasks .tkd-addsub input { flex: 1; height: 36px; padding: 0; border-color: transparent; background: transparent; }
+.view-tasks .tkd-addsub input:focus { padding: 0 10px; background: var(--input); }
+.view-tasks .tkd-foot { padding-top: 12px; border-top: 1px solid var(--line); }
+
+@media (max-width: 1060px) {
+  .view-tasks .tk-layout.has-detail { grid-template-columns: minmax(0, 1fr); }
+  .view-tasks .tk-detail { position: static; order: -1; }
+}
+@media (max-width: 720px) {
+  .view-tasks .tk-search, .view-tasks .tk-search input { width: 100%; }
+  .view-tasks .tk-time { display: none; }
+  .view-tasks .tk-bar > .seg:first-child { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+}
